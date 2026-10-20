@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Notice — Hack-O-Week</title>
+  <meta name="description" content="How Hack-O-Week collects, uses and protects participant registration data." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%232e5be6'/><text x='50' y='68' font-size='52' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header is-stuck">
+    <div class="container">
+      <nav class="nav" aria-label="Main navigation">
+        <a class="wordmark" href="index.html"><span class="mark" aria-hidden="true">H</span> Hack-O-Week</a>
+        <ul class="nav-links">
+          <li><a href="index.html#events">Events</a></li>
+          <li><a href="index.html#faqs">FAQs</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+          <a class="btn btn--primary btn--nav" href="register.html">Register Now</a>
+          <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="Toggle navigation menu"><span aria-hidden="true"></span></button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="page-head container">
+      <span class="eyebrow">Privacy</span>
+      <h1>Privacy notice</h1>
+      <p class="lead">What we collect when you register, why we collect it, and your choices.</p>
+    </div>
+
+    <section class="section section--tight">
+      <div class="container" style="max-width:780px">
+        <div class="form-shell">
+          <div class="form-section">
+            <h2>1. Who collects your data</h2>
+            <p>Your data is collected by the <strong id="organiser">Hack-O-Week organising committee</strong> of <strong id="college">your college</strong>. For questions, contact the committee using the details on the <a href="index.html#contact">contact page</a>.</p>
+          </div>
+
+          <div class="form-section">
+            <h2>2. What we collect</h2>
+            <p>Through the registration form we collect only what is needed to run the festival:</p>
+            <ul style="color:var(--ink-soft)">
+              <li>Name, email address and phone number</li>
+              <li>College, department/course and year of study</li>
+              <li>Events you register for, and team details if you enter as a team</li>
+              <li>Your consent to this notice, and the time of submission</li>
+            </ul>
+            <p class="mb-0">We do not collect payment details, government identifiers or photographs through this website.</p>
+          </div>
+
+          <div class="form-section">
+            <h2>3. Why we use it</h2>
+            <p>Only to organise Hack-O-Week: to confirm your participation, form teams, plan venues and event capacity, contact you about schedule changes, and produce attendance records for the college.</p>
+          </div>
+
+          <div class="form-section">
+            <h2>4. Where it is stored and who can see it</h2>
+            <p>Data is stored in a Supabase database hosted in the cloud. Database security rules (Row Level Security) restrict access to authorised administrators of the festival only. The public website cannot read participant details, and other participants cannot see your information.</p>
+          </div>
+
+          <div class="form-section">
+            <h2>5. How long we keep it</h2>
+            <p>Registration records are kept for the duration of the festival and for the reporting period agreed with the college, after which they are deleted or anonymised. <span class="pending-tag">Retention period to be confirmed</span></p>
+          </div>
+
+          <div class="form-section">
+            <h2>6. Your choices</h2>
+            <p class="mb-0">You can ask for a copy of your data, a correction, or deletion of your registration by contacting the organising committee. Withdrawing consent does not affect the lawfulness of processing carried out before withdrawal.</p>
+          </div>
+
+          <div class="form-section">
+            <h2>7. Changes to this notice</h2>
+            <p class="mb-0">Any change will be published on this page with an updated date.</p>
+          </div>
+
+          <div class="form-section text-center">
+            <p class="small muted mb-0">Last updated: <span id="updated">—</span> · <a href="index.html">Back to the festival website</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom" style="border:0;padding-top:0">
+        <span>&copy; <span id="footYear">2026</span> Hack-O-Week organising committee.</span>
+        <span><a href="register.html">Register</a> · <a href="index.html#faqs">FAQs</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script>
+    (function () {
+      var cfg = (window.HACK_CONFIG || {});
+      var org = cfg.CONTACT && cfg.CONTACT.organiserName;
+      var col = cfg.COLLEGE && cfg.COLLEGE.name;
+      if (org) document.getElementById("organiser").textContent = org;
+      if (col) document.getElementById("college").textContent = col;
+      document.getElementById("footYear").textContent = String(new Date().getFullYear());
+      document.getElementById("updated").textContent = new Date().toLocaleDateString(undefined, { dateStyle: "long" });
+
+      var nav = document.querySelector(".nav");
+      var toggle = document.getElementById("navToggle");
+      if (nav && toggle) {
+        toggle.addEventListener("click", function () {
+          var open = nav.classList.toggle("is-open");
+          toggle.setAttribute("aria-expanded", String(open));
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register — Hack-O-Week</title>
+  <meta name="description" content="Register to participate in Hack-O-Week. Choose your events, individual or team entry, and submit your details." />
+  <meta name="theme-color" content="#fbfaf7" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%232e5be6'/><text x='50' y='68' font-size='52' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header is-stuck">
+    <div class="container">
+      <nav class="nav" aria-label="Main navigation">
+        <a class="wordmark" href="index.html"><span class="mark" aria-hidden="true">H</span> Hack-O-Week</a>
+        <ul class="nav-links">
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="index.html#events">Events</a></li>
+          <li><a href="index.html#schedule">Schedule</a></li>
+          <li><a href="index.html#faqs">FAQs</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+          <li class="nav-mobile-cta"><a class="btn btn--primary" href="register.html" aria-current="page">Register Now</a></li>
+        </ul>
+        <div class="nav-actions">
+          <a class="btn btn--ghost btn--nav" href="index.html">Back to site</a>
+          <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="Toggle navigation menu"><span aria-hidden="true"></span></button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="page-head container">
+      <span class="eyebrow">Registration</span>
+      <h1>Sign up for Hack-O-Week</h1>
+      <p class="lead">One form, as many events as you like. Your entry is confirmed only after you see a reference number.</p>
+    </div>
+
+    <section class="section section--tight">
+      <div class="container">
+        <div data-setup-notice></div>
+
+        <div id="registrationAlert" class="alert alert--error hidden" role="alert" aria-live="assertive"></div>
+
+        <!-- ======================= FORM ======================= -->
+        <form class="form-shell" id="registrationForm" novalidate>
+          <!-- Section 1 -->
+          <div class="form-section">
+            <div class="form-section__head">
+              <span class="form-section__num" aria-hidden="true">1</span>
+              <div>
+                <h2>Your details</h2>
+                <p>Only what the organisers need to run the events.</p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="fullName">Full name<span class="req" aria-hidden="true">*</span></label>
+              <input class="input" id="fullName" name="full_name" type="text" autocomplete="name" placeholder="e.g. Ananya Sharma" required />
+              <p class="field-error" id="fullName-error"></p>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="email">Email address<span class="req" aria-hidden="true">*</span></label>
+                <input class="input" id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required />
+                <p class="field-error" id="email-error"></p>
+              </div>
+              <div class="field">
+                <label for="phone">Phone number<span class="req" aria-hidden="true">*</span></label>
+                <input class="input" id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+91 98765 43210" required />
+                <p class="field-error" id="phone-error"></p>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="college">College / institution<span class="req" aria-hidden="true">*</span></label>
+                <input class="input" id="college" name="college" type="text" autocomplete="organization" placeholder="Your college name" required />
+                <p class="field-error" id="college-error"></p>
+              </div>
+              <div class="field">
+                <label for="department">Department / course<span class="req" aria-hidden="true">*</span></label>
+                <input class="input" id="department" name="department" type="text" placeholder="e.g. B.Tech Computer Science" required />
+                <p class="field-error" id="department-error"></p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="year">Year of study<span class="req" aria-hidden="true">*</span></label>
+              <select class="select" id="year" name="year" required>
+                <option value="">Select your year</option>
+                <option value="1st year">1st year</option>
+                <option value="2nd year">2nd year</option>
+                <option value="3rd year">3rd year</option>
+                <option value="4th year">4th year</option>
+                <option value="Postgraduate">Postgraduate</option>
+                <option value="Other">Other</option>
+              </select>
+              <p class="field-error" id="year-error"></p>
+            </div>
+          </div>
+
+          <!-- Section 2 -->
+          <div class="form-section">
+            <div class="form-section__head">
+              <span class="form-section__num" aria-hidden="true">2</span>
+              <div>
+                <h2>Participation</h2>
+                <p>Enter solo, or register a team for team events.</p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="participation">How are you taking part?<span class="req" aria-hidden="true">*</span></label>
+              <select class="select" id="participation" name="participation_type">
+                <option value="individual">Individual</option>
+                <option value="team">Team</option>
+              </select>
+              <p class="hint">Some events are individual only, some are team only — check the event cards on the home page.</p>
+              <p class="field-error" id="participation-error"></p>
+            </div>
+
+            <div id="teamFields" class="hidden">
+              <div class="field">
+                <label for="teamName">Team name<span class="req" aria-hidden="true">*</span></label>
+                <input class="input" id="teamName" name="team_name" type="text" placeholder="e.g. The Debuggers" />
+                <p class="field-error" id="teamName-error"></p>
+              </div>
+              <div class="field">
+                <label for="teamMembers">Team members</label>
+                <textarea class="textarea" id="teamMembers" name="team_members" placeholder="One member per line — name and year.&#10;Riya Patel, 2nd year&#10;Arjun Mehta, 3rd year"></textarea>
+                <p class="hint">List your teammates (one per line). You do not need to repeat your own name. Final team lists may be confirmed by the organisers.</p>
+                <p class="field-error" id="teamMembers-error"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3 -->
+          <div class="form-section">
+            <div class="form-section__head">
+              <span class="form-section__num" aria-hidden="true">3</span>
+              <div>
+                <h2>Choose your events</h2>
+                <p>Select one or more — you can register for several in one entry.</p>
+              </div>
+            </div>
+
+            <div class="field">
+              <div id="eventChoices" class="choice-grid" role="group" aria-label="Events you can register for">
+                <div class="skeleton" style="height:64px"></div>
+                <div class="skeleton" style="height:64px"></div>
+                <div class="skeleton" style="height:64px"></div>
+              </div>
+              <p class="field-error" id="events-error"></p>
+            </div>
+          </div>
+
+          <!-- Section 4 -->
+          <div class="form-section">
+            <div class="form-section__head">
+              <span class="form-section__num" aria-hidden="true">4</span>
+              <div>
+                <h2>Consent</h2>
+                <p>Please read before submitting.</p>
+              </div>
+            </div>
+
+            <label class="consent" for="consent">
+              <input type="checkbox" id="consent" name="consent" />
+              <span>
+                I agree that the organising committee may store my details to administer Hack-O-Week, and I have read the
+                <a href="privacy.html" target="_blank">privacy notice</a>.<span class="req" aria-hidden="true">*</span>
+              </span>
+            </label>
+            <p class="field-error" id="consent-error"></p>
+
+            <button class="btn btn--primary btn--block mt-4" type="submit" id="submitBtn">
+              <span id="submitLabel">Submit registration</span>
+              <span class="spinner hidden" id="submitSpinner" aria-hidden="true"></span>
+            </button>
+            <p class="text-center small muted mt-3 mb-0">Your information is sent directly to the festival database and is visible only to authorised organisers.</p>
+          </div>
+        </form>
+
+        <!-- ======================= SUCCESS ======================= -->
+        <div class="form-shell success-panel hidden" id="successPanel" role="status" aria-live="polite">
+          <div class="check">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </div>
+          <h2>You're registered!</h2>
+          <p>Your entry has been saved in the festival database. Keep this reference number for your records:</p>
+          <span class="ref" id="regRef">—</span>
+          <p class="small muted" id="successSummary"></p>
+          <div class="hero-actions" style="justify-content:center">
+            <a class="btn btn--primary" href="index.html#events">Back to events</a>
+            <button class="btn btn--ghost" type="button" id="registerAnother">Register for someone else</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom" style="border:0;padding-top:0">
+        <span>&copy; <span id="footYear">2026</span> Hack-O-Week organising committee.</span>
+        <span><a href="privacy.html">Privacy notice</a> · <a href="index.html#faqs">FAQs</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/preview-events.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/register.js"></script>
+</body>
+</html>

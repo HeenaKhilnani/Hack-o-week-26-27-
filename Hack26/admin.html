@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Hack-O-Week Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#1b1a19" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%232e5be6'/><text x='50' y='68' font-size='52' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'>H</text></svg>" />
+</head>
+<body>
+  <!-- ===== Auth gate: shown while the session and admin role are verified ===== -->
+  <div id="authGate" class="auth-main" style="min-height:100vh;position:fixed;inset:0;z-index:200;background:var(--bg)">
+    <div class="text-center" style="max-width:420px">
+      <div class="spinner spinner--dark" style="width:34px;height:34px;margin:0 auto 20px;border-width:3px"></div>
+      <h2 style="font-size:1.2rem" id="gateTitle">Verifying access…</h2>
+      <p class="small muted" id="gateText">Checking your session and administrator authorisation.</p>
+      <div id="gateError" class="hidden">
+        <a class="btn btn--primary mt-3" href="admin-login.html">Back to sign-in</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-body hidden" id="adminApp">
+    <!-- ============================ SIDEBAR ============================ -->
+    <div class="sidebar-scrim" id="sidebarScrim"></div>
+    <aside class="admin-sidebar" id="sidebar" aria-label="Dashboard navigation">
+      <a class="wordmark" href="index.html"><span class="mark" aria-hidden="true">H</span> Hack-O-Week</a>
+
+      <span class="section-label">Menu</span>
+      <ul class="admin-nav" id="adminNav">
+        <li>
+          <button type="button" class="is-active" data-view="overview">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+            Overview
+          </button>
+        </li>
+        <li>
+          <button type="button" data-view="registrations">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
+            Registrations
+            <span class="count hidden" id="navRegCount">0</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" data-view="events">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+            Events
+          </button>
+        </li>
+      </ul>
+
+      <div class="sidebar-foot">
+        <div class="sidebar-user">
+          Signed in as
+          <strong id="adminEmail">—</strong>
+        </div>
+        <button class="btn btn--soft btn--sm" type="button" id="signOutBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Sign out
+        </button>
+      </div>
+    </aside>
+
+    <!-- ============================ MAIN ============================ -->
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <div style="display:flex;align-items:center;gap:12px;min-width:0">
+          <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="Open navigation" aria-expanded="false">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          </button>
+          <div style="min-width:0">
+            <h1 id="viewTitle">Overview</h1>
+            <p class="sub" id="viewSub">Live figures from the festival database</p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn--soft btn--sm" type="button" id="refreshBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+            Refresh
+          </button>
+        </div>
+      </header>
+
+      <main class="admin-content">
+        <div id="viewAlert" class="alert alert--error hidden" role="alert"></div>
+
+        <!-- ==================== VIEW: OVERVIEW ==================== -->
+        <section id="view-overview">
+          <div class="stat-grid" id="statGrid">
+            <div class="stat"><div class="label">Total registrations</div><div class="value" id="statTotal">—</div><div class="foot">across all published events</div></div>
+            <div class="stat"><div class="label">Team entries</div><div class="value" id="statTeams">—</div><div class="foot">registrations submitted as teams</div></div>
+            <div class="stat"><div class="label">Published events</div><div class="value" id="statEvents">—</div><div class="foot">currently visible on the site</div></div>
+            <div class="stat"><div class="label">Confirmed</div><div class="value" id="statConfirmed">—</div><div class="foot">registrations marked confirmed</div></div>
+          </div>
+
+          <div class="two-col mt-4">
+            <div class="panel">
+              <div class="panel-head">
+                <div><h2>Registrations by event</h2><p>Most popular events right now</p></div>
+              </div>
+              <div class="panel-body" id="byEventPanel">
+                <div class="skeleton" style="height:16px;margin-bottom:14px"></div>
+                <div class="skeleton" style="height:16px;margin-bottom:14px;width:80%"></div>
+                <div class="skeleton" style="height:16px;width:60%"></div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head">
+                <div><h2>Recent registrations</h2><p>The five latest entries</p></div>
+                <button class="btn btn--soft btn--sm" type="button" data-goto="registrations">View all</button>
+              </div>
+              <div class="table-wrap" id="recentPanel">
+                <div class="panel-body"><div class="skeleton" style="height:15px;margin-bottom:12px"></div><div class="skeleton" style="height:15px;margin-bottom:12px"></div><div class="skeleton" style="height:15px"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel mt-4">
+            <div class="panel-head"><div><h2>Registrations by category</h2><p>Technical and cultural split</p></div></div>
+            <div class="panel-body" id="byCategoryPanel">
+              <div class="skeleton" style="height:16px;margin-bottom:14px"></div>
+              <div class="skeleton" style="height:16px;width:70%"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW: REGISTRATIONS ==================== -->
+        <section id="view-registrations" class="hidden">
+          <div class="panel">
+            <div class="panel-head">
+              <div><h2>Registrations</h2><p id="regCountText">Loading…</p></div>
+              <div style="display:flex;gap:9px;flex-wrap:wrap">
+                <button class="btn btn--soft btn--sm" type="button" id="exportBtn">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+                  Export CSV
+                </button>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <label class="sr-only" for="searchInput">Search registrations</label>
+              <input class="input search" id="searchInput" type="search" placeholder="Search name, email, college or team…" />
+              <label class="sr-only" for="eventFilter">Filter by event</label>
+              <select class="select" id="eventFilter"><option value="">All events</option></select>
+              <label class="sr-only" for="statusFilter">Filter by status</label>
+              <select class="select" id="statusFilter">
+                <option value="">All statuses</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="waitlist">Waitlist</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              <label class="sr-only" for="sortSelect">Sort</label>
+              <select class="select" id="sortSelect">
+                <option value="created_at.desc">Newest first</option>
+                <option value="created_at.asc">Oldest first</option>
+                <option value="full_name.asc">Name A–Z</option>
+                <option value="status.asc">Status</option>
+              </select>
+            </div>
+
+            <div class="table-wrap" id="regTableWrap">
+              <table class="data-table" id="regTable">
+                <thead>
+                  <tr>
+                    <th scope="col">Participant</th>
+                    <th scope="col">Contact</th>
+                    <th scope="col">Events</th>
+                    <th scope="col">Participation</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Registered</th>
+                    <th scope="col"><span class="sr-only">Actions</span></th>
+                  </tr>
+                </thead>
+                <tbody id="regTableBody"></tbody>
+              </table>
+              <div id="regTableState"></div>
+            </div>
+
+            <div class="pagination" id="regPagination">
+              <span id="pageInfo">—</span>
+              <div class="pages">
+                <button class="btn btn--soft btn--sm" type="button" id="prevPage">Previous</button>
+                <button class="btn btn--soft btn--sm" type="button" id="nextPage">Next</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW: EVENTS ==================== -->
+        <section id="view-events" class="hidden">
+          <div class="panel">
+            <div class="panel-head">
+              <div><h2>Events</h2><p>Create, publish and archive the public event line-up</p></div>
+              <button class="btn btn--primary btn--sm" type="button" id="newEventBtn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                New event
+              </button>
+            </div>
+            <div class="table-wrap" id="eventTableWrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Event</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Format</th>
+                    <th scope="col">Schedule</th>
+                    <th scope="col">Status</th>
+                    <th scope="col"><span class="sr-only">Actions</span></th>
+                  </tr>
+                </thead>
+                <tbody id="eventTableBody"></tbody>
+              </table>
+              <div id="eventTableState"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- ==================== REGISTRATION DETAIL DRAWER ==================== -->
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="drawer" id="regDrawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
+    <div class="drawer-head">
+      <div>
+        <h2 id="drawerTitle">Registration</h2>
+        <p id="drawerSub">—</p>
+      </div>
+      <button class="icon-btn" type="button" id="drawerClose" aria-label="Close details">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="drawer-body" id="drawerBody"></div>
+    <div class="drawer-foot">
+      <button class="btn btn--danger btn--sm" type="button" id="deleteRegBtn">Delete</button>
+      <button class="btn btn--soft btn--sm" type="button" id="saveStatusBtn">Save status</button>
+    </div>
+  </aside>
+
+  <!-- ==================== EVENT EDITOR MODAL ==================== -->
+  <div class="modal-backdrop" id="eventModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle">
+      <div class="modal-head">
+        <div>
+          <h2 id="eventModalTitle">New event</h2>
+          <p>Events appear on the public site only when published.</p>
+        </div>
+        <button class="icon-btn" type="button" data-close-modal="eventModal" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert--error hidden" id="eventModalAlert" role="alert"></div>
+        <form id="eventForm">
+          <input type="hidden" id="eventId" />
+          <div class="field">
+            <label for="evName">Event name<span class="req" aria-hidden="true">*</span></label>
+            <input class="input" id="evName" type="text" required placeholder="e.g. Idea Sprint Hackathon" />
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label for="evCategory">Category<span class="req" aria-hidden="true">*</span></label>
+              <select class="select" id="evCategory">
+                <option value="hackathon">Hackathon &amp; coding</option>
+                <option value="technical">Technical quiz / challenge</option>
+                <option value="showcase">Project showcase</option>
+                <option value="gaming">Gaming &amp; interactive</option>
+                <option value="cultural">Cultural — dance, music, drama</option>
+                <option value="arts">Art &amp; general</option>
+                <option value="workshop">Workshop</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="evParticipation">Format</label>
+              <select class="select" id="evParticipation">
+                <option value="individual">Individual</option>
+                <option value="team">Team</option>
+                <option value="both">Individual or team</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="evDescription">Description</label>
+            <textarea class="textarea" id="evDescription" placeholder="One or two sentences shown on the event card."></textarea>
+          </div>
+          <div class="field">
+            <label for="evEligibility">Eligibility</label>
+            <input class="input" id="evEligibility" type="text" placeholder="e.g. Open to all students" />
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label for="evVenue">Venue</label>
+              <input class="input" id="evVenue" type="text" placeholder="Leave blank if not confirmed" />
+            </div>
+            <div class="field">
+              <label for="evStartsAt">Date &amp; time</label>
+              <input class="input" id="evStartsAt" type="datetime-local" />
+              <p class="hint">Leave blank until the schedule is confirmed.</p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="evSortOrder">Display order</label>
+            <input class="input" id="evSortOrder" type="number" min="0" step="1" value="0" />
+          </div>
+
+          <div class="switch-row">
+            <div class="info"><strong>Published</strong><span>Visible on the public website</span></div>
+            <label class="switch"><input type="checkbox" id="evPublished" /><span class="track"></span></label>
+          </div>
+          <div class="switch-row">
+            <div class="info"><strong>Registration open</strong><span>Accept new registrations for this event</span></div>
+            <label class="switch"><input type="checkbox" id="evRegOpen" checked /><span class="track"></span></label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn--ghost btn--sm" type="button" data-close-modal="eventModal">Cancel</button>
+        <button class="btn btn--primary btn--sm" type="button" id="saveEventBtn">Save event</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CONFIRM MODAL ==================== -->
+  <div class="modal-backdrop" id="confirmModal">
+    <div class="modal modal--sm" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <div class="modal-head">
+        <div>
+          <h2 id="confirmTitle">Are you sure?</h2>
+          <p id="confirmText">This action cannot be undone.</p>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn--ghost btn--sm" type="button" id="confirmCancel">Cancel</button>
+        <button class="btn btn--danger btn--sm" type="button" id="confirmOk">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/admin-dashboard.js"></script>
+</body>
+</html>

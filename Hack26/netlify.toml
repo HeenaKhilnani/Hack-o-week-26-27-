@@ -1,0 +1,33 @@
+# Netlify configuration for the Hack-O-Week website.
+#
+# Architecture: plain static HTML/CSS/JS — no build step, no dependencies.
+#   build.command  : nothing to build, so it is empty.
+#   publish        : the repository root (that is where index.html lives).
+#
+# Environment variables: this project does NOT need any on Netlify.
+# The browser only uses the public Supabase publishable key, which lives in
+# js/config.js — exactly like it does on your local machine.
+
+[build]
+  publish = "."
+  command = ""
+
+# Security & performance headers for every page.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Long cache for static assets (CSS/JS). HTML always stays fresh.
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
